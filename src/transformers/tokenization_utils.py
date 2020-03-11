@@ -1841,12 +1841,12 @@ class PreTrainedTokenizerFast(PreTrainedTokenizer):
             # Avoid thread overhead if only one example.
             if len(batch_text_or_text_pairs) == 1:
                 if isinstance(batch_text_or_text_pairs[0], (tuple, list)):
-                    tokens = self._tokenizer.encode(*batch_text_or_text_pairs[0])
+                    tokens = self._tokenizer.encode(*batch_text_or_text_pairs[0], add_special_tokens=add_special_tokens)
                 else:
-                    tokens = self._tokenizer.encode(batch_text_or_text_pairs[0])
+                    tokens = self._tokenizer.encode(batch_text_or_text_pairs[0], add_special_tokens=add_special_tokens)
                 tokens = [tokens]
             else:
-                tokens = self._tokenizer.encode_batch(batch_text_or_text_pairs)
+                tokens = self._tokenizer.encode_batch(batch_text_or_text_pairs, add_special_tokens=add_special_tokens)
 
         # Convert encoding to dict
         tokens = [
@@ -1888,7 +1888,7 @@ class PreTrainedTokenizerFast(PreTrainedTokenizer):
         self,
         text,
         text_pair=None,
-        add_special_tokens=False,
+        add_special_tokens=True,
         max_length=None,
         pad_to_max_length=False,
         stride=0,
