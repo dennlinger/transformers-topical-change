@@ -292,7 +292,8 @@ if is_torch_available():
     from .modeling_electra import (
         ElectraModel,
         ElectraGenerator,
-        ElectraDiscriminator
+        ElectraDiscriminator,
+        load_tf_weights_in_electra
     )
 
     # Optimization
