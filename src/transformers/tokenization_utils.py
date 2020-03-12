@@ -22,6 +22,7 @@ import os
 import re
 from collections import defaultdict
 from contextlib import contextmanager
+from typing import Optional
 
 from tokenizers.implementations import BaseTokenizer
 
@@ -1788,8 +1789,8 @@ class PreTrainedTokenizerFast(PreTrainedTokenizer):
     def num_special_tokens_to_add(self, pair=False):
         return self.tokenizer.num_special_tokens_to_add(pair)
 
-    def tokenize(self, text, **kwargs):
-        return self.tokenizer.encode(text).tokens
+    def tokenize(self, text, pair: Optional[str] = None, add_special_tokens: bool = True):
+        return self.tokenizer.encode(text, pair, add_special_tokens).tokens
 
     def batch_encode_plus(
         self,
