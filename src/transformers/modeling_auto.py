@@ -26,6 +26,7 @@ from .configuration_auto import (
     CamembertConfig,
     CTRLConfig,
     DistilBertConfig,
+    ElectraConfig,
     FlaubertConfig,
     GPT2Config,
     OpenAIGPTConfig,
@@ -35,7 +36,6 @@ from .configuration_auto import (
     XLMConfig,
     XLMRobertaConfig,
     XLNetConfig,
-    ElectraConfig,
 )
 from .configuration_utils import PretrainedConfig
 from .modeling_albert import (
@@ -76,6 +76,12 @@ from .modeling_distilbert import (
     DistilBertForSequenceClassification,
     DistilBertForTokenClassification,
     DistilBertModel,
+)
+from .modeling_electra import (
+    ELECTRA_PRETRAINED_MODEL_ARCHIVE_MAP,
+    ElectraForMaskedLM,
+    ElectraForPreTraining,
+    ElectraModel,
 )
 from .modeling_flaubert import (
     FLAUBERT_PRETRAINED_MODEL_ARCHIVE_MAP,
@@ -118,12 +124,7 @@ from .modeling_xlnet import (
     XLNetLMHeadModel,
     XLNetModel,
 )
-from .modeling_electra import (
-    ELECTRA_PRETRAINED_MODEL_ARCHIVE_MAP,
-    ElectraForPreTraining,
-    ElectraModel,
-    ElectraForMaskedLM
-)
+
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +169,7 @@ MODEL_MAPPING = OrderedDict(
         (FlaubertConfig, FlaubertModel),
         (XLMConfig, XLMModel),
         (CTRLConfig, CTRLModel),
-        (ElectraConfig, ElectraModel)
+        (ElectraConfig, ElectraModel),
     ]
 )
 
@@ -189,7 +190,7 @@ MODEL_FOR_PRETRAINING_MAPPING = OrderedDict(
         (FlaubertConfig, FlaubertWithLMHeadModel),
         (XLMConfig, XLMWithLMHeadModel),
         (CTRLConfig, CTRLLMHeadModel),
-        (ElectraConfig, ElectraForPreTraining)
+        (ElectraConfig, ElectraForPreTraining),
     ]
 )
 
@@ -210,7 +211,7 @@ MODEL_WITH_LM_HEAD_MAPPING = OrderedDict(
         (FlaubertConfig, FlaubertWithLMHeadModel),
         (XLMConfig, XLMWithLMHeadModel),
         (CTRLConfig, CTRLLMHeadModel),
-        (ElectraConfig, ElectraForMaskedLM)
+        (ElectraConfig, ElectraForMaskedLM),
     ]
 )
 
