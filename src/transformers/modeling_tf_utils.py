@@ -564,7 +564,7 @@ class TFPreTrainedModel(tf.keras.Model, TFModelUtilsMixin):
         if self.get_output_embeddings() is None:
             raise AttributeError(
                 "You tried to generate sequences with a model that does not have a LM Head."
-                "Please use another model class (e.g. `TFOpenAIGPTLMHeadModel`, `TFXLNetLMHeadModel`, `TFGPT2LMHeadModel`, `TFCTRLLMHeadModel`, `TFT5WithLMHeadModel`, `TFTransfoXLLMHeadModel`)"
+                "Please use another model class (e.g. `TFOpenAIGPTLMHeadModel`, `TFXLNetLMHeadModel`, `TFGPT2LMHeadModel`, `TFCTRLLMHeadModel`, `TFT5ForConditionalGeneration`, `TFTransfoXLLMHeadModel`)"
             )
 
         max_length = max_length if max_length is not None else self.config.max_length

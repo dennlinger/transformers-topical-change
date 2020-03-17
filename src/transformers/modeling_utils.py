@@ -718,7 +718,7 @@ class PreTrainedModel(nn.Module, ModuleUtilsMixin):
         if self.get_output_embeddings() is None:
             raise AttributeError(
                 "You tried to generate sequences with a model that does not have a LM Head."
-                "Please use another model class (e.g. `OpenAIGPTLMHeadModel`, `XLNetLMHeadModel`, `GPT2LMHeadModel`, `CTRLLMHeadModel`, `T5WithLMHeadModel`, `TransfoXLLMHeadModel`)"
+                "Please use another model class (e.g. `OpenAIGPTLMHeadModel`, `XLNetLMHeadModel`, `GPT2LMHeadModel`, `CTRLLMHeadModel`, `T5ForConditionalGeneration`, `TransfoXLLMHeadModel`)"
             )
 
         max_length = max_length if max_length is not None else self.config.max_length
@@ -846,11 +846,13 @@ class PreTrainedModel(nn.Module, ModuleUtilsMixin):
 
         if self.config.is_encoder_decoder:
             assert bos_token_id is not None, "Encoder Decoder Models need to have a bos_token_id"
-            assert hasattr(self, "encode"), "{} should have a 'encode' function defined".format(self)
-            assert callable(self.encode), "{} should be a method".format(self.encode)
+            assert hasattr(self, "get_encoder"), "{} should have a 'get_encoder' function defined".format(self)
+            assert callable(self.get_encoder), "{} should be a method".format(self.get_encoder)
 
-            # get encoder outputs once and store them
-            encoder_outputs = self.encode(input_ids, attention_mask=attention_mask)
+            # get encoder and store encoder outputs
+            encoder = self.get_encoder()
+
+            encoder_outputs = encoder(input_ids, attention_mask=attention_mask)
 
             # create empty decoder_input_ids
             input_ids = torch.full(
