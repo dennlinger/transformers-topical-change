@@ -134,6 +134,10 @@ examples/runs
 
 # data
 /data
+examples/bert_agb/
+examples/AGB*
+examples/roberta_agb
+
 serialization_dir
 
 # emacs
