@@ -18,8 +18,8 @@ MODEL_NAME = "roberta"
 MODEL = RobertaForSequenceClassification.from_pretrained("./roberta_og_consec")
 TOKENIZER = RobertaTokenizer.from_pretrained("./roberta_og_consec")
 
-SAME_SECTION_FLAG = 1
-DIFF_SECTION_FLAG = 0
+SAME_SECTION_FLAG = "1"
+DIFF_SECTION_FLAG = "0"
 
 MAX_LENGTH = 512
 MAX_BATCH_SIZE = 24
@@ -34,7 +34,6 @@ def generate_samples_per_file(file):
     data = data["level1_headings"]
     
     examples = []
-    labels = []
     prev_text = None
     prev_section = None
     label_list = ["0", "1"]
