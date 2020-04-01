@@ -39,7 +39,7 @@ def generate_samples_per_file(file):
     prev_section = None
     label_list = ["0", "1"]
     output_mode = "classification"
-
+    print(len(data))
     if len(data) < 2:
         return None
 
@@ -50,7 +50,7 @@ def generate_samples_per_file(file):
         else:
             temp_label = DIFF_SECTION_FLAG
 
-        InputExample(guid=guid, text_a=prev_section, text_b=paragraph["text"], label=temp_label)
+        examples.append(InputExample(guid=guid, text_a=prev_section, text_b=paragraph["text"], label=temp_label))
 
     features = convert_examples_to_features(
         examples,
