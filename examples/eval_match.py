@@ -15,15 +15,16 @@ import os
 TEST_FOLDER = "./og-test"
 
 MODEL_NAME = "roberta"
+DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 MODEL = RobertaForSequenceClassification.from_pretrained("./roberta_og_consec")
 TOKENIZER = RobertaTokenizer.from_pretrained("./roberta_og_consec")
+MODEL.to(DEVICE)
 
 SAME_SECTION_FLAG = "1"
 DIFF_SECTION_FLAG = "0"
 
 MAX_LENGTH = 512
 MAX_BATCH_SIZE = 24
-DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
 def generate_samples_per_file(file):
