@@ -40,7 +40,7 @@ def generate_samples_per_file(file):
     label_list = ["0", "1"]
     output_mode = "classification"
 
-    if len(data < 2):
+    if len(data) < 2:
         return None
 
     for i, paragraph in enumerate(data[1:]):
