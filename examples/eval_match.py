@@ -30,12 +30,18 @@ def generate_samples_per_file(file):
     with open(file) as f:
         data = json.load(f)
 
+    # only use first-level headings
+    data = data["level1_headings"]
+    
     examples = []
     labels = []
     prev_text = None
     prev_section = None
     label_list = ["0", "1"]
     output_mode = "classification"
+
+    if len(data < 2):
+        return None
 
     for i, paragraph in enumerate(data[1:]):
         guid = "%s-%s" % (file, i)
@@ -74,6 +80,9 @@ if __name__ == "__main__":
 
         file_dataset = generate_samples_per_file(os.path.join(TEST_FOLDER, file))
 
+        if not file_dataset:
+            print(f"File {file} too short.")
+            continue
         eval_sampler = SequentialSampler(file_dataset)
         # Maximize GPU usage. Datasets per file vary in length though
         batch_size = min(MAX_BATCH_SIZE, len(file_dataset))
