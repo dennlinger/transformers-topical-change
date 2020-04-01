@@ -34,8 +34,8 @@ def generate_samples_per_file(file):
     data = data["level1_headings"]
     
     examples = []
-    prev_text = None
-    prev_section = None
+    prev_text = data[0]["text"]
+    prev_label = data[0]["section"]
     label_list = ["0", "1"]
     output_mode = "classification"
     print(len(data))
@@ -44,12 +44,15 @@ def generate_samples_per_file(file):
 
     for i, paragraph in enumerate(data[1:]):
         guid = "%s-%s" % (file, i)
-        if paragraph["section"] == prev_section:
+        if paragraph["section"] == prev_label:
             temp_label = SAME_SECTION_FLAG
         else:
             temp_label = DIFF_SECTION_FLAG
 
-        examples.append(InputExample(guid=guid, text_a=prev_section, text_b=paragraph["text"], label=temp_label))
+        examples.append(InputExample(guid=guid, text_a=prev_text, text_b=paragraph["text"], label=temp_label))
+
+        prev_text = paragraph["text"]
+        prev_label = paragraph["section"]
 
     features = convert_examples_to_features(
         examples,
