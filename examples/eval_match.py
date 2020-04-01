@@ -24,22 +24,6 @@ MAX_BATCH_SIZE = 24
 DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
 
 
-def _create_examples(self, lines, set_type):
-    examples = []
-    for (i, line) in enumerate(lines):
-        if i == 0:
-            continue
-        guid = "%s-%s" % (file, line[0])
-        try:
-            text_a = line[3]
-            text_b = line[4]
-            label = line[5]
-        except IndexError:
-            continue
-        examples.append(InputExample(guid=guid, text_a=text_a, text_b=text_b, label=label))
-    return examples
-
-
 def generate_samples_per_file(file):
     with open(file) as f:
         data = json.load(f)
@@ -115,4 +99,8 @@ if __name__ == "__main__":
             else:
                 preds = np.append(preds, logits.detach().cpu().numpy(), axis=0)
                 out_label_ids = np.append(out_label_ids, inputs["labels"].detach().cpu().numpy(), axis=0)
+
+            preds = np.argmax(preds, axis=1)
+            print(preds)
+            print(out_label_ids)
 
