@@ -12,6 +12,8 @@ import torch
 import json
 import os
 
+TEST_FOLDER = "./og-test"
+
 MODEL_NAME = "roberta"
 MODEL = RobertaForSequenceClassification.from_pretrained("./roberta_og_consec")
 TOKENIZER = RobertaTokenizer.from_pretrained("./roberta_og_consec")
@@ -68,11 +70,9 @@ def generate_samples_per_file(file):
 
 
 if __name__ == "__main__":
-    test_folder = "./og_test"
+    for file in sorted(os.listdir(TEST_FOLDER)):
 
-    for file in sorted(os.listdir(test_folder)):
-
-        file_dataset = generate_samples_per_file(os.path.join(test_folder, file))
+        file_dataset = generate_samples_per_file(os.path.join(TEST_FOLDER, file))
 
         eval_sampler = SequentialSampler(file_dataset)
         # Maximize GPU usage. Datasets per file vary in length though
