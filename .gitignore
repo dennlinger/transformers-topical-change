@@ -137,6 +137,8 @@ examples/runs
 examples/bert_agb/
 examples/AGB*
 examples/roberta_agb
+examples/roberta_og_consec
+examples/og-test
 
 serialization_dir
 
