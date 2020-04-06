@@ -139,6 +139,7 @@ examples/AGB*
 examples/roberta_agb
 examples/roberta_og_consec
 examples/og-test
+examples/bert_og_consec*
 
 serialization_dir
 
