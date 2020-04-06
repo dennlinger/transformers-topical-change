@@ -3,21 +3,38 @@ Very rudimentary evaluation method for inputs that are sequential in nature.
 """
 
 from transformers import glue_convert_examples_to_features as convert_examples_to_features
-from transformers import RobertaTokenizer, RobertaForSequenceClassification
+from transformers import RobertaTokenizer, RobertaForSequenceClassification, \
+    BertTokenizer, BertForSequenceClassification
 from torch.utils.data import TensorDataset, SequentialSampler, DataLoader
 from transformers.data.processors.utils import InputExample
 from tqdm import tqdm
 import numpy as np
+import pickle
 import torch
 import json
+import sys
 import os
 
 TEST_FOLDER = "./og-test"
 
-MODEL_NAME = "roberta"
-DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
-MODEL = RobertaForSequenceClassification.from_pretrained("./roberta_og_consec")
-TOKENIZER = RobertaTokenizer.from_pretrained("./roberta_og_consec")
+print(sys.argv[1:])
+if len(sys.argv) < 3:
+    print("Missing argument. Please provide model and model path")
+
+MODEL_NAME = sys.argv[1]  # roberta or bert
+MODEL_PATH = sys.argv[2]  # ./roberta_og_consec
+
+if len(sys.argv) > 3:
+    DEVICE = sys.argv[3]
+else:
+    DEVICE = "cuda:0" if torch.cuda.is_available() else "cpu"
+
+if MODEL_NAME == "bert":
+    MODEL = BertForSequenceClassification.from_pretrained(MODEL_PATH)
+    TOKENIZER = BertTokenizer.from_pretrained(MODEL_PATH)
+elif MODEL_NAME == "roberta":
+    MODEL = BertForSequenceClassification.from_pretrained(MODEL_PATH)
+    TOKENIZER = BertTokenizer.from_pretrained(MODEL_PATH)
 MODEL.to(DEVICE)
 
 SAME_SECTION_FLAG = "1"
@@ -74,18 +91,19 @@ def generate_samples_per_file(file):
     return dataset
 
 
-
-
-
 if __name__ == "__main__":
+    all_preds = []
+    all_labels = []
     tp = 0
     fp = 0
+    break_rule = 0
     for file in tqdm(sorted(os.listdir(TEST_FOLDER))):
-
+        break_rule += 1
+        if break_rule > 10:
+            break
         file_dataset = generate_samples_per_file(os.path.join(TEST_FOLDER, file))
 
         if not file_dataset:
-            # print(f"File {file} too short.")
             continue
         eval_sampler = SequentialSampler(file_dataset)
         # Maximize GPU usage. Datasets per file vary in length though
@@ -119,5 +137,13 @@ if __name__ == "__main__":
             tp += 1
         else:
             fp += 1
-    print(f"Accuracy was {tp/(tp+fp):.6f}%")
+        all_preds.append(preds)
+        all_labels.append(out_label_ids)
+
+    print(f"Accuracy was {tp/(tp+fp)*100:.6f}%")
+    with open(f"preds_{MODEL_NAME.strip('/.')}.pkl", "wb") as f:
+        pickle.dump(all_preds, f)
+    with open(f"labels_{MODEL_NAME.strip('/.')}.pkl", "wb") as f:
+        pickle.dump(all_labels, f)
+
 
