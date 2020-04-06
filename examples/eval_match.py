@@ -96,11 +96,7 @@ if __name__ == "__main__":
     all_labels = []
     tp = 0
     fp = 0
-    break_rule = 0
     for file in tqdm(sorted(os.listdir(TEST_FOLDER))):
-        break_rule += 1
-        if break_rule > 10:
-            break
         file_dataset = generate_samples_per_file(os.path.join(TEST_FOLDER, file))
 
         if not file_dataset:
