@@ -39,7 +39,6 @@ def generate_samples_per_file(file):
     prev_label = data[0]["section"]
     label_list = ["0", "1"]
     output_mode = "classification"
-    print(len(data))
     if len(data) < 2:
         return None
 
@@ -79,12 +78,14 @@ def generate_samples_per_file(file):
 
 
 if __name__ == "__main__":
-    for file in sorted(os.listdir(TEST_FOLDER)):
+    tp = 0
+    fp = 0
+    for file in tqdm(sorted(os.listdir(TEST_FOLDER))):
 
         file_dataset = generate_samples_per_file(os.path.join(TEST_FOLDER, file))
 
         if not file_dataset:
-            print(f"File {file} too short.")
+            # print(f"File {file} too short.")
             continue
         eval_sampler = SequentialSampler(file_dataset)
         # Maximize GPU usage. Datasets per file vary in length though
@@ -94,7 +95,7 @@ if __name__ == "__main__":
         # Taken from run_glue's evaluate()
         preds = None
         out_label_ids = None
-        for batch in tqdm(eval_dataloader, desc="Evaluating"):
+        for batch in eval_dataloader:
             MODEL.eval()
             batch = tuple(t.to(DEVICE) for t in batch)
 
@@ -112,7 +113,11 @@ if __name__ == "__main__":
                 preds = np.append(preds, logits.detach().cpu().numpy(), axis=0)
                 out_label_ids = np.append(out_label_ids, inputs["labels"].detach().cpu().numpy(), axis=0)
 
-            preds = np.argmax(preds, axis=1)
-            print(preds)
-            print(out_label_ids)
+        preds = np.argmax(preds, axis=1)
+        exact_match = np.array_equal(preds, out_label_ids)
+        if exact_match:
+            tp += 1
+        else:
+            fp += 1
+    print(f"Accuracy was {tp/(tp+fp):.6f}%")
 
