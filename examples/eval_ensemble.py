@@ -26,19 +26,25 @@ def count_mistakes(label, preds):
 
 
 if __name__ == "__main__":
-    with open("labels.pkl", "rb") as f:
+    with open("labels_bert_og_consec_1.pkl", "rb") as f:
         labels = pickle.load(f)
-    with open("preds.pkl", "rb") as f:
-        preds = pickle.load(f)
-
+    with open("preds_bert_og_consec_1.pkl", "rb") as f:
+        preds1 = pickle.load(f)
+    with open("preds_bert_og_consec_2.pkl", "rb") as f:
+        preds2 = pickle.load(f)
+    with open("preds_bert_og_consec_5.pkl", "rb") as f:
+        preds3 = pickle.load(f)
+    with open("preds_roberta_og_consec_1.pkl", "rb") as f:
+        preds4 = pickle.load(f)
+    avg_lens = 0
     mistakes = []
-    for label, pred in zip(labels, preds):
+    for label, pred1, pred2, pred3, pred4 in zip(labels, preds1, preds2, preds3, preds4):
         # Simulate ensemble for now
-        pred = np.stack([pred, pred, pred])
+        pred = np.stack([pred1, pred2, pred3, pred4])
         num_mistakes = count_mistakes(label, pred)
         print(num_mistakes, len(label))
         mistakes.append(num_mistakes)
-
+        avg_lens += len(label)
     # convert so binary functions work
     mistakes = np.array(mistakes)
     x = list(range(10))
@@ -49,4 +55,6 @@ if __name__ == "__main__":
     plt.plot(x, y)
     plt.show()
 
+    print(y)
 
+    print(f"Average length: {avg_lens / len(labels):.2f} paragraphs")

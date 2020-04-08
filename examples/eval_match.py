@@ -33,8 +33,8 @@ if MODEL_NAME == "bert":
     MODEL = BertForSequenceClassification.from_pretrained(MODEL_PATH)
     TOKENIZER = BertTokenizer.from_pretrained(MODEL_PATH)
 elif MODEL_NAME == "roberta":
-    MODEL = BertForSequenceClassification.from_pretrained(MODEL_PATH)
-    TOKENIZER = BertTokenizer.from_pretrained(MODEL_PATH)
+    MODEL = RobertaForSequenceClassification.from_pretrained(MODEL_PATH)
+    TOKENIZER = RobertaTokenizer.from_pretrained(MODEL_PATH)
 MODEL.to(DEVICE)
 
 SAME_SECTION_FLAG = "1"
@@ -137,9 +137,9 @@ if __name__ == "__main__":
         all_labels.append(out_label_ids)
 
     print(f"Accuracy was {tp/(tp+fp)*100:.6f}%")
-    with open(f"preds_{MODEL_NAME.strip('/.')}.pkl", "wb") as f:
+    with open(f"preds_{MODEL_PATH.strip('/.')}.pkl", "wb") as f:
         pickle.dump(all_preds, f)
-    with open(f"labels_{MODEL_NAME.strip('/.')}.pkl", "wb") as f:
+    with open(f"labels_{MODEL_PATH.strip('/.')}.pkl", "wb") as f:
         pickle.dump(all_labels, f)
 
 
