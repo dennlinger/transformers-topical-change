@@ -44,6 +44,17 @@ def calculate_pk(preds, labels, name=""):
     print(f"P_k error rate of {name} is : {np.mean(res)*100:.2f}%")
 
 
+def load_sentence_transformers_result(fn):
+    with open(fn, "r") as f:
+        lines = f.readlines()
+
+    results = []
+    for line in lines:
+        # output format sucks
+        results.append(np.array(eval("["+line+"]")))
+
+    return results
+
 
 if __name__ == "__main__":
     with open("labels_bert_og_consec_1.pkl", "rb") as f:
@@ -56,11 +67,13 @@ if __name__ == "__main__":
         preds3 = pickle.load(f)
     with open("preds_roberta_og_consec_1.pkl", "rb") as f:
         preds4 = pickle.load(f)
+    preds5 = load_sentence_transformers_result("prediction_results.csv")
+
     avg_lens = 0
     mistakes = []
     majority_preds = []
-    for label, pred1, pred2, pred3, pred4 in zip(labels, preds1, preds2, preds3, preds4):
-        # Simulate ensemble for now
+    for label, pred1, pred2, pred3, pred4, pred5 in zip(labels, preds1, preds2, preds3, preds4, preds5):
+        # Simulate ensemble for now#
         pred = np.stack([pred1, pred2, pred3, pred4])
 
         # Majority vote. NumPy by default rounds 0.5 to 0.
@@ -95,9 +108,11 @@ if __name__ == "__main__":
 
     label_masses = [convert_to_masses(label) for label in labels]
     ensemble_masses = [convert_to_masses(pred) for pred in majority_preds]
-    roberta_masses = [convert_to_masses(pred) for pred in preds4]
     bert_masses = [convert_to_masses(pred) for pred in preds1]
+    roberta_masses = [convert_to_masses(pred) for pred in preds4]
+    baseline_masses = [convert_to_masses(pred) for pred in preds5]
 
     calculate_pk(ensemble_masses, label_masses, "ensemble")
     calculate_pk(roberta_masses, label_masses, "roberta")
     calculate_pk(bert_masses, label_masses, "bert")
+    calculate_pk(baseline_masses, label_masses, "baseline GloVe")
